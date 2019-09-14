@@ -1,0 +1,10 @@
+cn\edu\mju\weather\service\serviceImpl\WeatherDataServiceImpl.class
+cn\edu\mju\weather\config\RestConfiguration.class
+cn\edu\mju\weather\WeatherApplication.class
+cn\edu\mju\weather\entity\Yesterday.class
+cn\edu\mju\weather\constant\WeatherConstant.class
+cn\edu\mju\weather\controller\WeatherController.class
+cn\edu\mju\weather\entity\Weather.class
+cn\edu\mju\weather\entity\WeatherResponse.class
+cn\edu\mju\weather\service\WeatherDataService.class
+cn\edu\mju\weather\entity\Forecast.class
