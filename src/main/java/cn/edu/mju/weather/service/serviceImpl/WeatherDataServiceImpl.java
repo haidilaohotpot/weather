@@ -1,5 +1,6 @@
 package cn.edu.mju.weather.service.serviceImpl;
 
+import cn.edu.mju.weather.constant.RedisConstant;
 import cn.edu.mju.weather.constant.WeatherConstant;
 import cn.edu.mju.weather.entity.Weather;
 import cn.edu.mju.weather.entity.WeatherResponse;
@@ -9,11 +10,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sun.deploy.config.ClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -22,6 +25,9 @@ public class WeatherDataServiceImpl implements WeatherDataService {
 
     @Autowired
     private RestTemplate restTemplate;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
 
 
     @Override
@@ -64,14 +70,30 @@ public class WeatherDataServiceImpl implements WeatherDataService {
      */
     private WeatherResponse doGetWeather(String uri) throws RuntimeException {
 
-        String responseString = restTemplate.getForObject(uri, String.class);
+
+        //先从Redis缓存中查询
+
+        String key = uri;
+
+        String value = "";
+
+        if (stringRedisTemplate.hasKey(key)) {
+            //redis中有数据
+            log.info("从缓冲redis中获取天气信息");
+            value = stringRedisTemplate.opsForValue().get(key);
+
+        }else{
+            value = restTemplate.getForObject(uri, String.class);
+            //将数据写入缓存
+            log.info("调用第三方接口获取天气数据，将数据写入缓存!");
+            stringRedisTemplate.opsForValue().set(key,value,RedisConstant.TIME_OUT,TimeUnit.SECONDS);
+        }
 
         ObjectMapper objectMapper = new ObjectMapper();
 
         try {
-
             // TODO: 2019/9/14 处理字符编码问题
-//            return objectMapper.readValue(responseString, WeatherResponse.class);
+//            return objectMapper.readValue(value, WeatherResponse.class);
             return new WeatherResponse();
 
         } catch (Exception e) {
