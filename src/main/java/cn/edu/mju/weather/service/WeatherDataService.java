@@ -26,4 +26,11 @@ public interface WeatherDataService {
     WeatherResponse getDataByCityName(String cityName) throws RuntimeException;
 
 
+    /**
+     * 根据城市id同步天气
+     * @param cityId
+     */
+    void syncDataByCityId(String cityId);
+
+
 }

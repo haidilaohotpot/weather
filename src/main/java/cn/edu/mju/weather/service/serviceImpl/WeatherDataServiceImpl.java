@@ -60,6 +60,34 @@ public class WeatherDataServiceImpl implements WeatherDataService {
 
     }
 
+    @Override
+    public void syncDataByCityId(String cityId) {
+
+        String uri = WeatherConstant.WEATHER_URL_CITY_KEY + cityId;
+
+        saveWeatherData(uri);
+
+    }
+
+
+    /**
+     * 保存天气数据到redis中
+     * @param uri
+     */
+    private void saveWeatherData(String uri){
+
+        String key = uri;
+
+        String value = "";
+
+        value = restTemplate.getForObject(uri, String.class);
+        //将数据写入缓存
+        log.info("调用第三方接口获取天气数据，将数据写入缓存!");
+
+        stringRedisTemplate.opsForValue()
+                .set(key,value,RedisConstant.TIME_OUT,TimeUnit.SECONDS);
+
+    }
 
 
     /**
