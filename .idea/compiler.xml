@@ -11,6 +11,7 @@
         <module name="micro-weather-collection-server" />
         <module name="micro-weather-data-server" />
         <module name="weather" />
+        <module name="zuul" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

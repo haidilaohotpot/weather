@@ -12,11 +12,11 @@ import java.util.List;
  * @author <a href="https://github.com/haidilaohotpot">wonder4work</a>
  * @since 1.0.0 2019/9/16
  */
-@FeignClient("city")
+@FeignClient("zuul")
 @Service
 public interface CityClient {
 
-    @GetMapping("/cities")
+    @GetMapping("/city/cities")
     List<City> listCity() throws Exception;
 
 }
