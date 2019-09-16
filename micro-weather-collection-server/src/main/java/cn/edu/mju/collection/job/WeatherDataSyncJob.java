@@ -1,5 +1,6 @@
 package cn.edu.mju.collection.job;
 
+import cn.edu.mju.collection.client.CityClient;
 import cn.edu.mju.collection.entity.City;
 import cn.edu.mju.collection.service.WeatherDataCollectionService;
 import lombok.extern.slf4j.Slf4j;
@@ -7,6 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.QuartzJobBean;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,26 +20,20 @@ import java.util.List;
 public class WeatherDataSyncJob extends QuartzJobBean {
 
 
-
     @Autowired
     private WeatherDataCollectionService WeatherDataCollectionService;
+
+    @Autowired
+    private CityClient cityClient;
 
     @Override
     protected void executeInternal(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 
         log.info("定时任务开始，从第三方获取天气信息");
 
-        // TODO: 2019/9/15 改为城市数据api来提供服务
         List<City> cityList = null;
-
         try {
-            // TODO: 2019/9/15 替换 cityList
-            cityList = new ArrayList<>();
-
-            City city = new City();
-
-            city.setCityId("101280601");
-            cityList.add(city);
+            cityList = cityClient.listCity();
 
         } catch (Exception e) {
 
